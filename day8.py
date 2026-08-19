@@ -81,6 +81,7 @@ else:
     print('C')
 print('outside')
 ''
+Write output:
 'c'
 'outside'
 #TASK 5:
@@ -101,4 +102,6 @@ if marks > 40:
         print('Pass')
 else:
     print('Fail')
-    "Dictination"
+    '''
+    write output:
+    "Dictinction"
