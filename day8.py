@@ -101,4 +101,5 @@ if marks > 40:
         print('Pass')
 else:
     print('Fail')
-    "Dictination"
+    print('Dictinction')
+    'Dictinction'
