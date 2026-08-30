@@ -1,5 +1,4 @@
-list = [4, 3, 2, 5, 6]
-
+list = [0,1,2,3,4]
 # print elements in list with for each loop
 print("For each loop:")
 for num in list:
