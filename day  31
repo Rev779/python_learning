@@ -8,7 +8,7 @@ class MenuItem(ABC):
     def __init__(self, item_id, name, price):
         self.item_id = item_id
         self.name = name
-        self.__price = price  # encapsulated
+        self.price = price  # uses validation in the setter
 
     @property
     def price(self):
@@ -41,13 +41,17 @@ class Beverage(MenuItem):
     def category(self):
         return "Beverage"
 
-
 class Menu:
     def __init__(self):
         self._items = {}
         self._next_id = 1
 
     def add_item(self, name, price, kind, veg=True):
+        if price <= 0:
+            raise ValueError("Price must be positive")
+        if kind not in ("1", "2"):
+            raise ValueError("Invalid item type")
+
         item_id = self._next_id
         if kind == "1":
             item = Food(item_id, name, price, veg)
@@ -129,12 +133,17 @@ class Order:
         self.time = datetime.now()
 
     def add_item(self, item, qty=1):
+        if qty <= 0:
+            raise ValueError("Quantity must be greater than 0")
         self.lines.append((item, qty))
 
     def subtotal(self):
         return sum(item.price * qty for item, qty in self.lines)
 
     def update_status(self, status):
+        allowed = {"PLACED", "PAID", "CANCELLED"}
+        if status not in allowed:
+            raise ValueError("Invalid order status")
         self.status = status
 
     def __str__(self):
@@ -147,6 +156,8 @@ class Bill:
     GST_RATE = 0.05
 
     def __init__(self, order, discount_percent=0):
+        if not 0 <= discount_percent <= 100:
+            raise ValueError("Discount must be between 0 and 100")
         self.order = order
         self.discount_percent = discount_percent
 
@@ -245,6 +256,7 @@ class Restaurant:
         bill.print_bill()
         self.sales += bill.total()[3]
         order.table.is_free = True
+        return bill
 
     def daily_report(self):
         print(f"\n{self.name} - Orders: {len(self.orders)}, Sales: Rs.{self.sales:.2f}")
@@ -263,7 +275,11 @@ def add_menu_item(restaurant):
     if kind == "1":
         veg_input = input("Veg or Non-Veg? (v/n): ").strip().lower()
         veg = veg_input != "n"
-    restaurant.menu.add_item(name, price, kind, veg)
+    try:
+        restaurant.menu.add_item(name, price, kind, veg)
+    except ValueError as e:
+        print(f"Invalid menu item: {e}")
+        return
     print("Menu item added successfully!")
 
 
@@ -273,6 +289,12 @@ def add_table(restaurant):
         capacity = int(input("Enter Table Capacity: "))
     except ValueError:
         print("Invalid input. Table not added.")
+        return
+    if number <= 0 or capacity <= 0:
+        print("Table number and capacity must be positive.")
+        return
+    if number in restaurant.tables:
+        print("Table number already exists.")
         return
     restaurant.add_table(number, capacity)
     print("Table added successfully!")
@@ -286,6 +308,12 @@ def hire_staff(restaurant):
         return
     name = input("Enter Staff Name: ")
     role = input("Select Role (1-Waiter / 2-Chef / 3-Manager): ")
+    if role not in ("1", "2", "3"):
+        print("Invalid role.")
+        return
+    if any(s.staff_id == staff_id for s in restaurant.staff):
+        print("Staff ID already exists.")
+        return
     restaurant.hire(staff_id, name, role)
     print("Staff hired successfully!")
 
@@ -316,8 +344,12 @@ def place_order(restaurant):
             continue
         try:
             qty = int(input("Enter Quantity: "))
+            if qty <= 0:
+                print("Quantity must be greater than 0.")
+                continue
         except ValueError:
-            qty = 1
+            print("Invalid quantity.")
+            continue
         order.add_item(item, qty)
         print(f"Added {item.name} x{qty} to order.")
     if not order.lines:
@@ -343,8 +375,12 @@ def checkout_order(restaurant):
         return
     try:
         discount = float(input("Enter Discount % (0 if none): "))
+        if discount < 0 or discount > 100:
+            print("Discount must be between 0 and 100.")
+            return
     except ValueError:
-        discount = 0
+        print("Invalid discount.")
+        return
     restaurant.checkout(order, discount)
 
 
