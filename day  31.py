@@ -262,7 +262,7 @@ def add_menu_item(restaurant):
     if kind == "1":
         veg_input = input("Veg or Non-Veg? (v/n): ").strip().lower()
         veg = veg_input != "n"
-    restaurant.menu.add_item()
+    restaurant.menu.add_item(name, price, kind, veg)
     print("Menu item added successfully!")
 
 
