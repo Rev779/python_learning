@@ -1,0 +1,53 @@
+ # Link : https://www.hackerrank.com/challenges/py-if-else/problem
+if __name__ == '__main__':
+    n = int(input().strip())
+    if n % 2 == 1:
+        print("Weird")
+    elif 2 <= n <= 5:
+        print("Not Weird")
+    elif 6 <= n <= 20:
+        print("Weird")
+    else:
+        print("Not Weird")
+
+# Link : https://www.hackerrank.com/challenges/write-a-function/problem
+def is_leap(year):
+    return year % 400 == 0 or (year % 4 == 0 and year % 100 != 0)
+year = int(input())
+print(is_leap(year))
+
+# Link : https://leetcode.com/problems/fizz-buzz/
+class Solution:
+    def fizzBuzz(self, n: int) -> list[str]:
+        answer = []
+        for i in range(1, n + 1):
+            if i % 15 == 0:
+                answer.append("FizzBuzz")
+            elif i % 3 == 0:
+                answer.append("Fizz")
+            elif i % 5 == 0:
+                answer.append("Buzz")
+            else:
+                answer.append(str(i))
+        return answer
+
+       #   Link : https://www.hackerrank.com/challenges/list-comprehensions/problem
+       if __name__ == '__main__':
+    x = int(input())
+    y = int(input())
+    z = int(input())
+    n = int(input())
+    print([[i, j, k]
+       for i in range(x + 1)
+       for j in range(y + 1)
+       for k in range(z + 1)
+       if i + j + k != n])
+
+       # Link :https://leetcode.com/problems/build-array-from-permutation/
+      
+    class Solution:
+    def  buildArray(self, nums: list[int]) -> list[int]:
+        res = []
+        for n in nums:
+            res.append(nums[n])
+        return res
